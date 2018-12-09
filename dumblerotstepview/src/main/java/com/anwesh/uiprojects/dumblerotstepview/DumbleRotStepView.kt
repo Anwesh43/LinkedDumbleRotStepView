@@ -212,4 +212,12 @@ class DumbleRotStepView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+        fun create(activity: Activity) : DumbleRotStepView {
+            val view : DumbleRotStepView = DumbleRotStepView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
