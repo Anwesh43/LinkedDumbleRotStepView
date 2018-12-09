@@ -18,6 +18,7 @@ val scGap : Float = 0.05f
 val hSize : Float = 0.65f
 val color : Int = Color.parseColor("#0D47A1")
 val backColor : Int = Color.parseColor("#BDBDBD")
+val DELAY : Long = 25
 
 fun Int.getInverse() : Float = 1f / this
 
@@ -111,7 +112,7 @@ class DumbleRotStepView(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(DELAY)
                     view.invalidate()
                 } catch(ex : Exception) {
 
