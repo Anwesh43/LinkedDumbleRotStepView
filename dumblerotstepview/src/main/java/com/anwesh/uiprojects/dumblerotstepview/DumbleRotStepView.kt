@@ -15,13 +15,13 @@ val lines : Int = 4
 val sizeFactor : Float = 2.4f
 val scDiv : Double = 0.51
 val scGap : Float = 0.05f
-val hSize : Float = 0.8f
+val hSize : Float = 0.65f
 val color : Int = Color.parseColor("#0D47A1")
 val backColor : Int = Color.parseColor("#BDBDBD")
 
 fun Int.getInverse() : Float = 1f / this
 
-fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.getInverse(), this - n.getInverse() * i)
+fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.getInverse(), Math.max(this - n.getInverse() * i, 0f)) * n
 
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
 
@@ -29,21 +29,28 @@ fun Float.mirrorValue(a : Int, b : Int) : Float = (1 - scaleFactor()) * a.getInv
 
 fun Float.updateScale(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * dir * scGap
 
+fun Int.getTwoModulo() : Float = 1f - 2 * this
+
+fun Int.scaleX() : Float = (this % 2).getTwoModulo()
+
+fun Int.scaleY() : Float = (this / 2).getTwoModulo()
+
 fun Canvas.drawDRSNode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
     val gap : Float = w / (nodes + 1)
     val size : Float = gap / sizeFactor
     val rectH : Float = hSize * size
-    val triSize : Float = size - rectH
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
     paint.color = color
     save()
     translate(gap * (i + 1), h/2)
     rotate(sc2 * 90f)
-    drawRect(RectF(-size, -triSize, size, triSize), paint)
+    drawRect(RectF(-size, -rectH, size, rectH), paint)
     for (j in 0..(lines - 1)) {
+        save()
+        scale(j.scaleX(), j.scaleY())
         val sc : Float = sc1.divideScale(j, lines)
         val dy : Float = size
         val oy : Float = rectH
@@ -54,6 +61,7 @@ fun Canvas.drawDRSNode(i : Int, scale : Float, paint : Paint) {
         path.lineTo(size, -sy)
         path.lineTo(rectH, -rectH)
         drawPath(path, paint)
+        restore()
     }
     restore()
 }
@@ -82,7 +90,7 @@ class DumbleRotStepView(ctx : Context) : View(ctx) {
         fun update(cb : (Float) -> Unit) {
             scale += scale.updateScale(dir, lines, 1)
             if (Math.abs(scale - prevScale) > 1) {
-                scale = prevScale
+                scale = prevScale + dir
                 dir = 0f
                 prevScale = scale
                 cb(prevScale)
