@@ -39,7 +39,7 @@ fun Canvas.drawDRSNode(i : Int, scale : Float, paint : Paint) {
     val triSize : Float = size - rectH
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
-    paint.color = color 
+    paint.color = color
     save()
     translate(gap * (i + 1), h/2)
     rotate(sc2 * 90f)
@@ -57,4 +57,22 @@ fun Canvas.drawDRSNode(i : Int, scale : Float, paint : Paint) {
         drawPath(path, paint)
     }
     restore()
+}
+
+class DumbleRotStepView(ctx : Context) : View(ctx) {
+
+    private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    override fun onDraw(canvas : Canvas) {
+
+    }
+
+    override fun onTouchEvent(event : MotionEvent) : Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+
+            }
+        }
+        return true
+    }
 }
