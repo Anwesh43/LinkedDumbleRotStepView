@@ -13,7 +13,6 @@ import android.graphics.*
 val nodes : Int = 5
 val lines : Int = 4
 val sizeFactor : Float = 2.4f
-val strokeFactor : Int = 90
 val scDiv : Double = 0.51
 val scGap : Float = 0.05f
 val hSize : Float = 0.8f
@@ -63,14 +62,16 @@ class DumbleRotStepView(ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    override fun onDraw(canvas : Canvas) {
+    private val renderer : Renderer = Renderer(this)
 
+    override fun onDraw(canvas : Canvas) {
+        renderer.render(canvas, paint)
     }
 
     override fun onTouchEvent(event : MotionEvent) : Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-
+                renderer.handleTap()
             }
         }
         return true
