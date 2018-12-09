@@ -168,7 +168,7 @@ class DumbleRotStepView(ctx : Context) : View(ctx) {
         }
     }
 
-    data class DoubleRotStep(var i : Int) {
+    data class DumbleRotStep(var i : Int) {
         private val root : DRSNode = DRSNode()
         private var curr : DRSNode = root
         private var dir : Int = 1
@@ -188,6 +188,27 @@ class DumbleRotStepView(ctx : Context) : View(ctx) {
 
         fun startUpdating(cb : () -> Unit) {
             curr.startUpdating(cb)
+        }
+    }
+
+    data class Renderer(var view : DumbleRotStepView) {
+        private var drs : DumbleRotStep = DumbleRotStep(0)
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            drs.draw(canvas, paint)
+            animator.animate {
+                drs.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            drs.startUpdating {
+                animator.start()
+            }
         }
     }
 }
